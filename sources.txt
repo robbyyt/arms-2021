@@ -1,0 +1,15 @@
+--worldwide--
+BBC
+CNN
+NY TIMES
+Politico
+Washington post
+The economist
+Aljazeera
+
+--romania--
+Mediafax
+News.ro
+Libertatea
+Hotnews
+Reporteris
