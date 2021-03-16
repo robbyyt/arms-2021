@@ -16,11 +16,11 @@ class CNN:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        headline = self.soup.find_all('p', {'class': 'zn-body__paragraph'})
-        headline_text = ''
-        for tag in headline:
-            headline_text += tag.text
-        content = [headline_text]
+        description = self.soup.find_all('p', {'class': 'zn-body__paragraph'})
+        description_text = ''
+        for tag in description:
+            description_text += tag.text
+        content = [description_text]
         text_divs = self.soup.find_all('div', {'class': 'zn-body__paragraph'})
 
         for div in text_divs:

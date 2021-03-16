@@ -17,8 +17,8 @@ class Economist:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        headline = self.soup.find('p', {'class': 'article__description'}).text
-        content = [headline]
+        description = self.soup.find('p', {'class': 'article__description'}).text
+        content = [description]
         text_ps = self.soup.find_all('p', {'class': 'article__body-text'})
         for p in text_ps:
             content.append(p.text)

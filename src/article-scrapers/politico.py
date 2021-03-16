@@ -17,8 +17,8 @@ class Politico:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        headline = self.soup.find('p', {'class': 'dek'}).text
-        content = [headline]
+        description = self.soup.find('p', {'class': 'dek'}).text
+        content = [description]
         text_ps = self.soup.find_all('p', {'class': 'story-text__paragraph'})
         for p in text_ps:
             content.append(p.text)
