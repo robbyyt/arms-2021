@@ -4,6 +4,10 @@ from langdetect import detect
 
 
 class CNN:
+    """
+    Scraper for CNN articles.
+    For the moment it extracts the title and content of an article given by URL.
+    """
     def __init__(self, url: str):
         article = requests.get(url)
         self.soup = bs(article.content, 'html.parser')

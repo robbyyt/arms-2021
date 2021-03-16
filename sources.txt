@@ -1,8 +1,8 @@
 --worldwide--
-BBC
-CNN
-NY TIMES
-Politico
+BBC - done
+CNN - done
+NY TIMES -
+Politico - done
 Washington post
 The economist
 Aljazeera
