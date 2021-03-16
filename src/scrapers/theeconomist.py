@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class NYTimes:
+class Economist:
     """
-    Scraper for NYTimes articles.
+    Scraper for Economist articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -17,15 +17,16 @@ class NYTimes:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        headline = self.soup.find('p', {'class': 'dek'}).text
+        headline = self.soup.find('p', {'class': 'article__description'}).text
         content = [headline]
-        text_ps = self.soup.find_all('p', {'class': 'story-text__paragraph'})
+        text_ps = self.soup.find_all('p', {'class': 'article__body-text'})
         for p in text_ps:
             content.append(p.text)
+
         return content
 
     def get_title(self) -> str:
-        return self.soup.find('h2', {'class': 'headline'}).text
+        return self.soup.find('span', {'class': 'article__headline'}).text
 
     def get_language(self) -> str:
         try:
@@ -42,5 +43,5 @@ class NYTimes:
 
 
 if __name__ == '__main__':
-    article = NYTimes('https://www.politico.com/news/2021/03/12/cuomo-ny-congress-democrats-resignations-475522')
+    article = Economist('https://www.economist.com/science-and-technology/2021/03/15/eu-countries-pause-astrazenecas-covid-19-jab-over-safety-fears')
     print(article.to_object())
