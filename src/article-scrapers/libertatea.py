@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Guardian:
+class Libertatea:
     """
-    Scraper for Guardian articles.
+    Scraper for Libertatea articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -17,15 +17,17 @@ class Guardian:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        description = self.soup.find('div', {'class': 'css-xmt4aq'}).find('p').text
+        description = self.soup.find('p', {'class': 'intro'}).text.lstrip()
         content = [description]
-        text_ps = self.soup.find('div', {'class': 'article-body-commercial-selector'}).find_all('p')
+        text_ps = self.soup.find('div', {'class': 'article-body'}).find_all('p')
         for p in text_ps:
-            content.append(p.text)
+            text = p.text.lstrip().rstrip()
+            if text:
+                content.append(text)
         return content
 
     def get_title(self) -> str:
-        return self.soup.find('h1').text
+        return self.soup.find('h1').text.lstrip().rstrip()
 
     def get_language(self) -> str:
         try:
@@ -35,7 +37,7 @@ class Guardian:
 
     def to_object(self):
         return {
-            'source': 'guardian',
+            'source': 'libertatea',
             'title': self.title,
             'body': self.body,
             'language': self.language
@@ -43,5 +45,5 @@ class Guardian:
 
 
 if __name__ == '__main__':
-    article = Guardian('https://www.theguardian.com/world/2021/mar/16/israeli-archeologists-find-new-dead-sea-scroll-fragments')
+    article = Libertatea('https://www.libertatea.ro/stiri/tvr-pierde-procesul-cu-libertatea-intentat-dupa-dezvaluirile-ziarului-despre-cheltuielile-de-aproape-jumatate-de-milion-de-euro-cu-eurovisionul-3456545')
     print(article.to_object())

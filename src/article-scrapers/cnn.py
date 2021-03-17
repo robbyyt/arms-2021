@@ -39,6 +39,7 @@ class CNN:
 
     def to_object(self):
         return {
+            'source': 'cnn',
             'title': self.title,
             'body': self.body,
             'language': self.language

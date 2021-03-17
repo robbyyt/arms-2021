@@ -36,6 +36,7 @@ class Aljazeera:
 
     def to_object(self):
         return {
+            'source': 'aljazeera',
             'title': self.title,
             'body': self.body,
             'language': self.language

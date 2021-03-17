@@ -36,6 +36,7 @@ class Economist:
 
     def to_object(self):
         return {
+            'source': 'economist',
             'title': self.title,
             'body': self.body,
             'language': self.language

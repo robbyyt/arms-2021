@@ -36,6 +36,7 @@ class BBC:
 
     def to_object(self):
         return {
+            'source': 'bbc',
             'title': self.title,
             'body': self.body,
             'language': self.language

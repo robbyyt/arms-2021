@@ -35,6 +35,7 @@ class Politico:
 
     def to_object(self):
         return {
+            'source': 'politico',
             'title': self.title,
             'body': self.body,
             'language': self.language

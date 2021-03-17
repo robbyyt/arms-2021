@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Guardian:
+class Newsro:
     """
-    Scraper for Guardian articles.
+    Scraper for News.ro articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -17,15 +17,17 @@ class Guardian:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        description = self.soup.find('div', {'class': 'css-xmt4aq'}).find('p').text
-        content = [description]
-        text_ps = self.soup.find('div', {'class': 'article-body-commercial-selector'}).find_all('p')
+        content = []
+        text_ps = self.soup.find('div', {'class': 'article-content'}).find_all('p')
         for p in text_ps:
-            content.append(p.text)
+            text = p.text.lstrip().rstrip()
+            if text:
+                content.append(text)
+        content.pop()
         return content
 
     def get_title(self) -> str:
-        return self.soup.find('h1').text
+        return self.soup.find('h1').text.lstrip().rstrip()
 
     def get_language(self) -> str:
         try:
@@ -35,7 +37,7 @@ class Guardian:
 
     def to_object(self):
         return {
-            'source': 'guardian',
+            'source': 'news.ro',
             'title': self.title,
             'body': self.body,
             'language': self.language
@@ -43,5 +45,5 @@ class Guardian:
 
 
 if __name__ == '__main__':
-    article = Guardian('https://www.theguardian.com/world/2021/mar/16/israeli-archeologists-find-new-dead-sea-scroll-fragments')
+    article = Newsro('https://www.news.ro/politic-intern/george-garbacea-a-fost-numit-presedintele-agentiei-nationale-pentru-protectia-mediului-la-propunerea-usr-plus-1922400016002021031920066629')
     print(article.to_object())
