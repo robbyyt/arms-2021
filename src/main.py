@@ -64,8 +64,6 @@ if __name__ == '__main__':
             # traceback.print_exc()
 
     current_articles = get_lbrLinks()
-    print(current_articles)
-    print(len(current_articles))
     for article in current_articles:
         try:
             articles.append(Libertatea(article).to_object())
