@@ -7,8 +7,8 @@ def get_gdnLinks():
     pagesToGet = 10
     upperFrame=[]
     links_list = []
-    for page in range(1, pagesToGet + 1):
-        url = "https://www.theguardian.com/us-news/george-floyd?page="+str(page)
+    for page in range(2, pagesToGet + 1):
+        url = "https://www.france24.com/en/tag/george-floyd/"+str(page)+"/#pager"
         try:
             page = requests.get(url)
         except Exception as e:
@@ -17,10 +17,10 @@ def get_gdnLinks():
             print(error_type, 'Line:', error_info.tb_lineno)  # print error info and line that threw the exception
         # time.sleep(2)
         soup = BeautifulSoup(page.text, 'html.parser')
-        links = soup.find_all('div', attrs={'class': 'fc-item__container'})
+        links = soup.find_all('div', attrs={'class': 'o-layout-list__item 1-m-100 1-t-50 l-d-33'})
         # print(len(links))
         for j in links:
-            Link = j.find("div", attrs={'class': 'fc-item__content'}).find('a')['href'].strip()
+            Link = j.find("div", attrs={'class': 'm-item-list-article'}).find('a')['href'].strip()
             links_list.append(Link)
 
         return (links_list)
