@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Newsro:
+class Hotnews:
     """
-    Scraper for News.ro articles.
+    Scraper for Hotnews articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -15,15 +15,16 @@ class Newsro:
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.author = self.get_author()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
         content = []
-        text_ps = self.soup.find('div', {'class': 'article-content'}).find_all('p')
-        for p in text_ps:
-            text = p.text.lstrip().rstrip()
+        text_divs = self.soup.find('div', {'id': 'articleContent'}).find_all('div')
+        for div in text_divs:
+            text = div.text.lstrip().rstrip()
             if text:
                 content.append(text)
-        content.pop()
         return content
 
     def get_title(self) -> str:
@@ -35,15 +36,29 @@ class Newsro:
         except:
             return detect(self.title)
 
+    def get_author(self) -> str:
+        try:
+            return self.soup.find('div', {'class': 'autor'}).find('a').text
+        except:
+            return 'unkwnown'
+
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
-            'source': 'news.ro',
+            'source': 'hotnews',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date,
+            'author': self.author
         }
 
 
 if __name__ == '__main__':
-    article = Newsro('https://www.news.ro/politic-intern/george-garbacea-a-fost-numit-presedintele-agentiei-nationale-pentru-protectia-mediului-la-propunerea-usr-plus-1922400016002021031920066629')
+    article = Hotnews('https://www.hotnews.ro/stiri-international-24671737-rusia-rechemat-ambasadorul-rus-sua-pentru-consultari.htm')
     print(article.to_object())

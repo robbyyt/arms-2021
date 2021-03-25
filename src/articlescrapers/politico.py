@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Guardian:
+class Politico:
     """
-    Scraper for Guardian articles.
+    Scraper for Politico articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -15,17 +15,19 @@ class Guardian:
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.author = self.get_author()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
-        description = self.soup.find('div', {'class': 'css-xmt4aq'}).find('p').text
+        description = self.soup.find('p', {'class': 'dek'}).text
         content = [description]
-        text_ps = self.soup.find('div', {'class': 'article-body-commercial-selector'}).find_all('p')
+        text_ps = self.soup.find_all('p', {'class': 'story-text__paragraph'})
         for p in text_ps:
             content.append(p.text)
         return content
-
+    
     def get_title(self) -> str:
-        return self.soup.find('h1').text
+        return self.soup.find('h2', {'class': 'headline'}).text
 
     def get_language(self) -> str:
         try:
@@ -33,15 +35,29 @@ class Guardian:
         except:
             return detect(self.title)
 
+    def get_author(self) -> str:
+        try:
+            return self.soup.find('p', {'class': 'story-meta__authors'}).text.lstrip()
+        except:
+            return 'unkwnown'
+
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
-            'source': 'guardian',
+            'source': 'politico',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date,
+            'author': self.author
         }
 
 
 if __name__ == '__main__':
-    article = Guardian('https://www.theguardian.com/world/2021/mar/16/israeli-archeologists-find-new-dead-sea-scroll-fragments')
+    article = Politico('https://www.politico.com/news/2021/03/12/cuomo-ny-congress-democrats-resignations-475522')
     print(article.to_object())

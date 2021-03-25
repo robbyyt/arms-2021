@@ -15,12 +15,17 @@ class Reporteris:
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.title = self.get_title()
+        self.language = self.get_language()
+        self.author = self.get_author()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
-        description = self.soup.find('div', {'class': 'itemIntroText'}).find('h5').text
-        content = [description]
-        intro = self.soup.find('div', {'class': 'itemIntroText'}).find('p').text
-        content.append(intro)
+        try:
+            description = self.soup.find('div', {'class': 'itemIntroText'}).find('h5').text
+            content = [description]
+        except:
+            content = []
         text_ps = self.soup.find('div', {'class': 'itemFullText'}).find_all('p')
         for p in text_ps:
             text = p.text.lstrip().rstrip()
@@ -35,12 +40,26 @@ class Reporteris:
     def get_language(self) -> str:
         return detect(self.title)
 
+    def get_author(self) -> str:
+        try:
+            return self.soup.find('span', {'class': 'itemAuthor'}).find('a').text.lstrip()
+        except:
+            return 'unkwnown'
+
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
             'source': 'reporteris',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date,
+            'author': self.author
         }
 
 

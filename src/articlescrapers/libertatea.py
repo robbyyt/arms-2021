@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Mediafax:
+class Libertatea:
     """
-    Scraper for Mediafax articles.
+    Scraper for Libertatea articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -15,15 +15,13 @@ class Mediafax:
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.author = self.get_author()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
-        try:
-            description = self.soup.find('p', {'class': 'chapeau'}).text
-            content = [description]
-        except:
-            content = []
-
-        text_ps = self.soup.find('div', {'id': 'article_text_content'}).find('div', {'class': 'just-article-content'}).find_all('p')
+        description = self.soup.find('p', {'class': 'intro'}).text.lstrip()
+        content = [description]
+        text_ps = self.soup.find('div', {'class': 'article-body'}).find_all('p')
         for p in text_ps:
             text = p.text.lstrip().rstrip()
             if text:
@@ -39,15 +37,29 @@ class Mediafax:
         except:
             return detect(self.title)
 
+    def get_author(self) -> str:
+        try:
+            return self.soup.find('span', {'class': 'author'}).find('a').text
+        except:
+            return 'unkwnown'
+
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
-            'source': 'mediafax',
+            'source': 'libertatea',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date,
+            'author': self.author
         }
 
 
 if __name__ == '__main__':
-    article = Mediafax('https://www.mediafax.ro/politic/motiunea-depusa-impotriva-ministrului-economiei-a-fost-respinsa-19961033')
+    article = Libertatea('https://www.libertatea.ro/stiri/tvr-pierde-procesul-cu-libertatea-intentat-dupa-dezvaluirile-ziarului-despre-cheltuielile-de-aproape-jumatate-de-milion-de-euro-cu-eurovisionul-3456545')
     print(article.to_object())

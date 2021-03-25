@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Politico:
+class Guardian:
     """
-    Scraper for Politico articles.
+    Scraper for Guardian articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
@@ -17,15 +17,18 @@ class Politico:
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        description = self.soup.find('p', {'class': 'dek'}).text
-        content = [description]
-        text_ps = self.soup.find_all('p', {'class': 'story-text__paragraph'})
+        try:
+            description = self.soup.find('div', {'class': 'css-xmt4aq'}).find('p').text
+            content = [description]
+        except:
+            content = []
+        text_ps = self.soup.find('div', {'class': 'article-body-commercial-selector'}).find_all('p')
         for p in text_ps:
             content.append(p.text)
         return content
-    
+
     def get_title(self) -> str:
-        return self.soup.find('h2', {'class': 'headline'}).text
+        return self.soup.find('h1').text
 
     def get_language(self) -> str:
         try:
@@ -35,13 +38,13 @@ class Politico:
 
     def to_object(self):
         return {
-            'source': 'politico',
+            'source': 'guardian',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
         }
 
 
 if __name__ == '__main__':
-    article = Politico('https://www.politico.com/news/2021/03/12/cuomo-ny-congress-democrats-resignations-475522')
+    article = Guardian('https://www.theguardian.com/world/2021/mar/16/israeli-archeologists-find-new-dead-sea-scroll-fragments')
     print(article.to_object())

@@ -3,27 +3,32 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Aljazeera:
+class France24:
     """
-    Scraper for Aljazeera articles.
+    Scraper for France24 articles.
     For the moment it extracts the title and content of an article given by URL.
     """
 
     def __init__(self, url: str):
-        article = requests.get(url)
+        article = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'})
         self.soup = bs(article.content, 'html.parser')
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
 
     def get_body(self) -> list:
-        description = self.soup.find('p', {'class': 'article__subhead'}).text
+        description = self.soup.find('p', {'class': 't-content__chapo'}).text.lstrip().rstrip()
         content = [description]
-        text_ps = self.soup.find('div', {'class': 'wysiwyg wysiwyg--all-content'}).find_all('p')
+        text_ps = self.soup.find('div', {'class': 't-content__body'}).find_all('p')
         for p in text_ps:
-            content.append(p.text)
-        return content
+            content.append(p.text.lstrip().rstrip())
 
+        content.pop()
+        content.pop()
+        if content[len(content) - 1] == '(AP)':
+            content.pop()
+
+        return content
 
     def get_title(self) -> str:
         return self.soup.find('h1').text
@@ -36,7 +41,7 @@ class Aljazeera:
 
     def to_object(self):
         return {
-            'source': 'aljazeera',
+            'source': 'france24',
             'title': self.title,
             'body': self.body,
             'language': self.language
@@ -44,5 +49,5 @@ class Aljazeera:
 
 
 if __name__ == '__main__':
-    article = Aljazeera('https://www.aljazeera.com/news/2021/3/16/protesters-storm-presidential-palace-in-yemens-aden')
+    article = France24('https://www.france24.com/en/middle-east/20210320-turkey-quits-landmark-istanbul-convention-protecting-women-from-violence')
     print(article.to_object())

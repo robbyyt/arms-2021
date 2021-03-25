@@ -4,11 +4,13 @@ CNN - done
 Politico - done
 The economist - done
 The guardian - done
-Aljazeera - done
+Aljazeera - done links work
+tv5monde
+france24 - done
 
 --romania--
 Mediafax - done
 News.ro - done
 Libertatea - done
 Hotnews - done
-Reporteris
+Reporteris - done

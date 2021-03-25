@@ -3,30 +3,31 @@ from bs4 import BeautifulSoup as bs
 from langdetect import detect
 
 
-class Economist:
+class BBC:
     """
-    Scraper for Economist articles.
+    Scraper for BBC articles.
     For the moment it extracts the title and content of an article given by URL.
     """
-
     def __init__(self, url: str):
         article = requests.get(url)
         self.soup = bs(article.content, 'html.parser')
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
-        description = self.soup.find('p', {'class': 'article__description'}).text
-        content = [description]
-        text_ps = self.soup.find_all('p', {'class': 'article__body-text'})
-        for p in text_ps:
-            content.append(p.text)
-
+        article_elem = self.soup.find('article')
+        body = article_elem.find_all('div', {'data-component': 'text-block'})
+        content = []
+        for div in body:
+            content.append(
+                div.find('div').find('p').text
+            )
         return content
 
     def get_title(self) -> str:
-        return self.soup.find('span', {'class': 'article__headline'}).text
+        return self.soup.find('h1').text
 
     def get_language(self) -> str:
         try:
@@ -34,15 +35,22 @@ class Economist:
         except:
             return detect(self.title)
 
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
-            'source': 'economist',
+            'source': 'bbc',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date
         }
 
 
 if __name__ == '__main__':
-    article = Economist('https://www.economist.com/science-and-technology/2021/03/15/eu-countries-pause-astrazenecas-covid-19-jab-over-safety-fears')
+    article = BBC('https://www.bbc.com/news/world-us-canada-56368328')
     print(article.to_object())

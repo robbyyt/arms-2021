@@ -14,6 +14,8 @@ class CNN:
         self.body = self.get_body()
         self.title = self.get_title()
         self.language = self.get_language()
+        self.author = self.get_author()
+        self.date = self.get_date()
 
     def get_body(self) -> list:
         description = self.soup.find_all('p', {'class': 'zn-body__paragraph'})
@@ -37,12 +39,26 @@ class CNN:
         except:
             return detect(self.title)
 
+    def get_author(self) -> str:
+        try:
+            return self.soup.find('span', {'class': 'metadata__byline__author'}).text
+        except:
+            return 'unkwnown'
+
+    def get_date(self) -> str:
+        try:
+            return self.soup.find('time')['datetime']
+        except:
+            return 'unknown'
+
     def to_object(self):
         return {
             'source': 'cnn',
             'title': self.title,
             'body': self.body,
-            'language': self.language
+            'language': self.language,
+            'date': self.date,
+            'author': self.author
         }
 
 
