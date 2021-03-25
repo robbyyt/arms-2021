@@ -13,6 +13,7 @@ from articlescrapers.newsro import Newsro
 from articlescrapers.politico import Politico
 from articlescrapers.reporteris import Reporteris
 from articlescrapers.theeconomist import Economist
+from articlescrapers.france24 import France24
 
 from articlelinks.bbc import get_bbcLinks
 from articlelinks.aljazeera import get_aljLinks
